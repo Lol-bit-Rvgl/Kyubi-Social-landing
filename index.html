@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/styles.css?v=20260918">
+  <link rel="stylesheet" href="assets/css/styles.css?v=community-v1">
 </head>
 <body>
   <a class="skip-link" href="#hero">Saltar al contenido</a>
@@ -45,8 +45,8 @@
       <ul class="nav-links">
         <li><a href="#modulos">Módulos</a></li>
         <li><a href="#identidad">Identidad</a></li>
-        <li><a href="#salas">Salas en vivo</a></li>
         <li><a href="#comunidad">Comunidad</a></li>
+        <li><a href="#discord">Discord</a></li>
         <li><a href="#descarga">Descargar</a></li>
       </ul>
 
@@ -63,8 +63,8 @@
       <ul>
         <li><a href="#modulos">Módulos <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
         <li><a href="#identidad">Identidad Cósmica <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
-        <li><a href="#salas">Salas en vivo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
-        <li><a href="#comunidad">Comunidad Discord <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+        <li><a href="#comunidad">Comunidad &amp; Pioneros <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
+        <li><a href="#discord">Discord Oficial <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
         <li><a href="#descarga">Descargar APK <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a></li>
       </ul>
     </div>
@@ -83,8 +83,8 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
               Acceso Beta (Pronto)
             </a>
-            <a class="btn btn-secondary btn-lg" href="#salas">
-              Explorar salas
+            <a class="btn btn-secondary btn-lg" href="#comunidad">
+              Conocer Comunidad
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
           </div>
@@ -201,34 +201,60 @@
     </div>
   </section>
 
-  <!-- ================= SALAS EN VIVO ================= -->
-  <section class="section" id="salas">
+  <!-- ================= COMUNIDAD CÓSMICA / CUENTAS CREADAS ================= -->
+  <section class="section section-pioneers" id="comunidad">
     <div class="container">
       <div class="section-head reveal">
-        <span class="eyebrow">Ahora en vivo</span>
-        <h2>Salas activas en este momento</h2>
-        <p>Únete a una sala en curso o crea la tuya desde la app. Voz, cine y roleplay conviven en el mismo universo.</p>
+        <span class="eyebrow">Comunidad en Crecimiento</span>
+        <h2>Cuentas Creadas &amp; <span class="gradient-text">Pioneros de Kyubi</span></h2>
+        <p>Descubre a los primeros exploradores, directores de rol y creadores que ya forman parte del universo Kyubi.</p>
       </div>
 
-      <div class="room-filters reveal" role="group" aria-label="Filtrar salas por modo">
-        <button class="room-filter-btn active" type="button" data-filter="all" aria-pressed="true">Todas</button>
-        <button class="room-filter-btn" type="button" data-filter="roleplay" aria-pressed="false">Roleplay</button>
-        <button class="room-filter-btn" type="button" data-filter="cine" aria-pressed="false">Cine</button>
-        <button class="room-filter-btn" type="button" data-filter="voz" aria-pressed="false">Voz & Tertulia</button>
-        <span class="rooms-status" id="rooms-status" role="status" aria-live="polite"></span>
+      <!-- Bloque de Métricas Rápidas (Liquid Glass Cards) -->
+      <div class="community-metrics-grid reveal">
+        <div class="metric-glass-card glass-card">
+          <div class="metric-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="metric-info">
+            <span class="metric-value" id="stat-total-users">+24</span>
+            <span class="metric-label">Total de Exploradores Registrados</span>
+          </div>
+        </div>
+
+        <div class="metric-glass-card glass-card">
+          <div class="metric-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+          </div>
+          <div class="metric-info">
+            <span class="metric-value">v1.2.0-beta</span>
+            <span class="metric-label">Versión Activa · Android</span>
+          </div>
+        </div>
+
+        <div class="metric-glass-card glass-card">
+          <div class="metric-icon-wrap metric-status-wrap">
+            <span class="status-pulse-emerald" aria-hidden="true"></span>
+          </div>
+          <div class="metric-info">
+            <span class="metric-value text-emerald">En línea</span>
+            <span class="metric-label">Estado de la Red</span>
+          </div>
+        </div>
       </div>
 
-      <div class="rooms-grid" id="rooms-grid"></div>
-
-      <p class="rooms-note reveal">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        Salas en vivo sincronizadas directamente con el backend oficial de Kyubi.
-      </p>
+      <!-- Grid dinámico de perfiles Liquid Glass -->
+      <div class="community-profiles-grid" id="community-grid">
+        <div class="community-loading glass-card">
+          <span class="pulse-dot" style="background:#BA68C8;box-shadow:0 0 10px #BA68C8;" aria-hidden="true"></span>
+          <span>Sincronizando pioneros de la red de Kyubi...</span>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- ================= COMUNIDAD DISCORD ================= -->
-  <section class="section section-community" id="comunidad">
+  <section class="section section-community" id="discord">
     <div class="container">
       <div class="section-head reveal">
         <span class="eyebrow">Comunidad en vivo</span>
@@ -394,20 +420,28 @@
           </div>
         </div>
 
-        <div class="footer-live-rooms glass-card">
-          <div class="footer-rooms-head">
-            <div class="footer-rooms-title">
+        <!-- Contenedor Dinámico: Pioneros Conectados / Estado de la Red -->
+        <div class="footer-live-pioneers glass-card">
+          <div class="footer-pioneers-head">
+            <div class="footer-pioneers-title-wrap">
               <span class="pulse-dot" aria-hidden="true"></span>
-              <h4>Salas activas en este momento</h4>
+              <h4>Pioneros Conectados</h4>
             </div>
-            <a class="footer-rooms-more" href="#salas">
-              Ver todas
+            <a class="footer-pioneers-more" href="#comunidad">
+              Conocer pioneros
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             </a>
           </div>
-          <div class="footer-rooms-grid" id="footer-active-rooms">
-            <div class="footer-rooms-loading">
-              <span class="pulse-dot" aria-hidden="true"></span> Conectando con las salas en vivo...
+          <div class="footer-pioneers-body" id="footer-active-pioneers">
+            <div class="pioneers-stack" id="pioneers-avatar-stack">
+              <!-- Renderizado dinámico de avatares superpuestos -->
+            </div>
+            <div class="pioneers-stack-info">
+              <span class="pioneers-status-pill">
+                <span class="status-pulse-emerald" aria-hidden="true"></span>
+                <strong>Red Activa</strong> · <span id="footer-pioneers-count">+24 Pioneros</span>
+              </span>
+              <p class="pioneers-stack-desc">Exploradores y creadores preparando el universo Kyubi.</p>
             </div>
           </div>
         </div>
@@ -523,6 +557,6 @@
     </div>
   </div>
 
-  <script src="assets/js/main.js?v=20260918" defer></script>
+  <script src="assets/js/main.js?v=community-v1" defer></script>
 </body>
 </html>
