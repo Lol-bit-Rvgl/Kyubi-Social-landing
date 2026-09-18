@@ -1,0 +1,12 @@
+{
+  "name": "kyubi-landing",
+  "version": "1.2.0",
+  "description": "Sitio web oficial de Kyubi - Socializa, crea historias y vive el roleplay en tiempo real",
+  "scripts": {
+    "dev": "npx serve . -l 3000",
+    "start": "npx serve . -l 3000"
+  },
+  "keywords": ["kyubi", "social", "roleplay", "landing"],
+  "author": "Nodo Apps",
+  "license": "UNLICENSED"
+}

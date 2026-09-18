@@ -1,0 +1,14 @@
+# Dependencias y entornos
+node_modules/
+.env
+.env.local
+
+# Binarios pesados (>100MB bloquean git push)
+downloads/*.apk
+*.apk
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
