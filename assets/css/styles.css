@@ -34,7 +34,7 @@
 
 html {
   scroll-padding-top: calc(var(--nav-h) + 16px);
-  scroll-behavior: smooth;
+  scroll-behavior: smooth !important;
   overscroll-behavior-y: none;
 }
 
@@ -48,6 +48,7 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  position: relative;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -2319,12 +2320,21 @@ body.modal-open {
    Preferencias de movimiento reducido + impresión
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: smooth !important;
+  }
   *, *::before, *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
   .reveal, .reveal-on-scroll { opacity: 1 !important; transform: none !important; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth !important;
+  }
 }
 
 @media print {

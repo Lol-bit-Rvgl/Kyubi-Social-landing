@@ -39,7 +39,7 @@
     });
   }
 
-  /* ---------- 2. Controlador de Scroll Cinemático ---------- */
+  /* ---------- 2. Controlador de Scroll Cinemático Asistido ---------- */
   function smoothScrollToTarget(targetId) {
     if (!targetId || targetId === '#' || targetId === '#!') return;
     var target;
@@ -52,27 +52,45 @@
 
     closeMenu();
 
-    var navOffset = header ? (header.offsetHeight || 88) : 88;
-    var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+    // Desplazamiento nativo suave asistido (respeta scroll-margin-top: 96px)
+    if (typeof target.scrollIntoView === 'function') {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    } else {
+      var navOffset = header ? (header.offsetHeight || 88) : 88;
+      var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+      window.scrollTo({
+        top: Math.max(0, targetPosition),
+        behavior: 'smooth'
+      });
+    }
 
-    window.scrollTo({
-      top: Math.max(0, targetPosition),
-      behavior: reduceMotion ? 'auto' : 'smooth'
-    });
-
+    // Actualizar URL sin provocar recálculo de salto
     if (window.history && window.history.pushState) {
-      window.history.pushState(null, null, targetId);
+      window.history.pushState(null, '', targetId);
     }
   }
 
+  // Interceptar clics en enlaces de navegación interna
   document.addEventListener('click', function (event) {
     var link = event.target.closest('a[href^="#"]');
     if (!link) return;
-    // Prevenir conflicto con los botones o enlaces que abren el modal de descarga
+
+    // Respetar botones y enlaces de descarga que abren el modal de prueba privada
     if (link.closest('.btn-download, .download-btn, .download-link, a[href*=".apk"], a[href="#descarga"].btn')) return;
 
     var hash = link.getAttribute('href');
     if (!hash || hash === '#' || hash === '#!') return;
+
+    var target;
+    try {
+      target = document.querySelector(hash);
+    } catch (e) {
+      target = null;
+    }
+    if (!target) return;
 
     event.preventDefault();
     smoothScrollToTarget(hash);
