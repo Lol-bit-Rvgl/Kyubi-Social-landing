@@ -71,8 +71,13 @@
     revealEls.forEach(function (el) { io.observe(el); });
   }
 
-  /* ---------- 4. Salas en vivo: catálogo ---------- */
-  var ROOMS = [
+  /* ---------- Configuración de API de Backend ---------- */
+  var BACKEND_URL = window.KYUBI_API_URL || 'https://kyubi-social-backend-1.onrender.com';
+  var SALAS_API_ENDPOINT = BACKEND_URL + '/api/salas';
+  var SALAS_FALLBACK_ENDPOINT = BACKEND_URL + '/salas';
+
+  /* ---------- 4. Salas en vivo: catálogo de respaldo ---------- */
+  var ROOMS_FALLBACK = [
     {
       id: 'sala-rp-01',
       title: 'Crónicas de Aethelgard: La Tercera Luna',
@@ -141,6 +146,8 @@
     }
   ];
 
+  var ROOMS = ROOMS_FALLBACK.slice();
+
   var ROOM_META = {
     roleplay: { label: 'Roleplay', className: 'badge-roleplay', color: '#FFB300', icon: 'sword' },
     cine: { label: 'Sala de Cine', className: 'badge-cine', color: '#FF1744', icon: 'film' },
@@ -161,14 +168,102 @@
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + icons[name] + '</svg>';
   }
 
+  function normalizeRoom(r) {
+    if (!r || typeof r !== 'object') return null;
+    var title = r.title || r.name || 'Sala comunitaria';
+    var rawMode = String(r.mode || r.currentMode || 'roleplay').toLowerCase().trim();
+    var mode = 'roleplay';
+    if (rawMode === 'cine' || rawMode === 'cinema' || rawMode === 'screening') {
+      mode = 'cine';
+    } else if (rawMode === 'voz' || rawMode === 'voice') {
+      mode = 'voz';
+    } else if (ROOM_META[rawMode]) {
+      mode = rawMode;
+    }
+
+    var hostName = 'Anfitrión';
+    if (typeof r.host === 'string' && r.host.trim()) {
+      hostName = r.host.trim();
+    } else if (r.host && typeof r.host === 'object') {
+      hostName = r.host.displayName || r.host.username || 'Anfitrión';
+    }
+
+    var initials = r.initials;
+    if (!initials) {
+      initials = hostName
+        .split(' ')
+        .filter(Boolean)
+        .map(function (w) { return w[0]; })
+        .join('')
+        .slice(0, 2)
+        .toUpperCase() || 'KB';
+    }
+
+    var participants = typeof r.participants === 'number'
+      ? r.participants
+      : (typeof r.participantCount === 'number' ? r.participantCount : (Array.isArray(r.participants) ? r.participants.length : 0));
+    var max = typeof r.max === 'number'
+      ? r.max
+      : (typeof r.capacity === 'number' ? r.capacity : 10);
+    var tags = Array.isArray(r.tags) ? r.tags : [];
+    var description = r.description || (r.circle && r.circle.name ? 'Sala del círculo ' + r.circle.name : 'Sala comunitaria en vivo');
+
+    return {
+      id: r.id || ('sala-' + Math.random().toString(36).slice(2)),
+      title: title,
+      mode: mode,
+      description: description,
+      host: hostName,
+      initials: initials,
+      participants: participants,
+      max: max,
+      tags: tags
+    };
+  }
+
   function renderRooms() {
     if (!roomsGrid) return;
+    if (!ROOMS || ROOMS.length === 0) {
+      roomsGrid.innerHTML =
+        '<div class="rooms-empty glass-card">' +
+          '<div class="rooms-empty-icon">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>' +
+          '</div>' +
+          '<h3>No hay salas públicas abiertas en este momento</h3>' +
+          '<p>Sé el primero en abrir una sala de rol, cine sincronizado o tertulia de voz desde la app de Kyubi.</p>' +
+          '<a class="btn btn-download btn-md" href="#descarga">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>' +
+            'Abrir sala desde la App' +
+          '</a>' +
+        '</div>';
+      if (roomsStatus) {
+        roomsStatus.textContent = 'No hay salas abiertas en vivo.';
+      }
+      return;
+    }
+
     var visible = ROOMS.filter(function (room) {
       return activeFilter === 'all' || room.mode === activeFilter;
     });
+
+    if (visible.length === 0) {
+      roomsGrid.innerHTML =
+        '<div class="rooms-empty glass-card">' +
+          '<div class="rooms-empty-icon">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>' +
+          '</div>' +
+          '<h3>Sin salas en esta categoría</h3>' +
+          '<p>No hay salas activas de ' + (ROOM_META[activeFilter] ? ROOM_META[activeFilter].label : activeFilter) + ' en este momento.</p>' +
+        '</div>';
+      if (roomsStatus) {
+        roomsStatus.textContent = '0 salas en esta categoría.';
+      }
+      return;
+    }
+
     roomsGrid.innerHTML = visible.map(function (room) {
-      var meta = ROOM_META[room.mode];
-      var pct = Math.round((room.participants / room.max) * 100);
+      var meta = ROOM_META[room.mode] || ROOM_META.roleplay;
+      var pct = Math.min(100, Math.round((room.participants / (room.max || 1)) * 100));
       return (
         '<article class="room-card glass-card" style="--badge-color:' + meta.color + '">' +
           '<div class="room-card-top">' +
@@ -177,7 +272,7 @@
           '</div>' +
           '<h3>' + room.title + '</h3>' +
           '<p>' + room.description + '</p>' +
-          '<div class="room-tags">' + room.tags.map(function (tag) { return '<span>' + tag + '</span>'; }).join('') + '</div>' +
+          '<div class="room-tags">' + (room.tags || []).map(function (tag) { return '<span>' + tag + '</span>'; }).join('') + '</div>' +
           '<div class="room-card-bottom">' +
             '<span class="room-host"><i>' + room.initials + '</i>' + room.host + '</span>' +
             '<span class="room-meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
@@ -375,14 +470,12 @@
     document.body.classList.remove('modal-open');
   }
 
-  // Interceptar todos los botones y enlaces de descarga
-  var downloadTriggers = document.querySelectorAll(
-    '.btn-download, .download-btn, .download-link, a[href*=".apk"], a[href="#descarga"].btn'
-  );
-  downloadTriggers.forEach(function (trigger) {
-    trigger.addEventListener('click', function (e) {
+  // Interceptar todos los botones y enlaces de descarga (delegación reactiva)
+  document.body.addEventListener('click', function (e) {
+    var trigger = e.target.closest('.btn-download, .download-btn, .download-link, a[href*=".apk"], a[href="#descarga"].btn');
+    if (trigger) {
       openComingSoonModal(e);
-    });
+    }
   });
 
   if (modalCloseBtn) {
@@ -410,7 +503,19 @@
     if (!footerRoomsGrid) return;
     var items = (roomsList || []).slice(0, 4);
     if (!items.length) {
-      footerRoomsGrid.innerHTML = '<div class="footer-rooms-loading">No hay salas disponibles en este momento.</div>';
+      footerRoomsGrid.innerHTML =
+        '<div class="footer-rooms-empty glass-card">' +
+          '<div class="footer-empty-icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>' +
+          '</div>' +
+          '<div class="footer-empty-content">' +
+            '<p class="footer-empty-text">No hay salas públicas abiertas en este momento. ¡Sé el primero en abrir una desde la app!</p>' +
+            '<a class="btn btn-download btn-sm footer-empty-btn" href="#descarga">' +
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>' +
+              'Abrir sala desde la App' +
+            '</a>' +
+          '</div>' +
+        '</div>';
       return;
     }
 
@@ -420,7 +525,7 @@
       var hostName = room.host || 'Anfitrión';
       var initials = room.initials || hostName.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
       var tag = (room.tags && room.tags.length > 0) ? room.tags[0] : meta.label;
-      var participants = typeof room.participants === 'number' ? room.participants : 1;
+      var participants = typeof room.participants === 'number' ? room.participants : 0;
       var max = typeof room.max === 'number' ? room.max : 10;
 
       return (
@@ -443,32 +548,62 @@
   }
 
   function fetchLiveRooms() {
-    if (!footerRoomsGrid) return;
-
     var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 2500) : null;
+    var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 12000) : null;
 
-    fetch('/api/salas', {
-      signal: controller ? controller.signal : undefined
-    })
+    function applyData(raw) {
+      var rawRooms = Array.isArray(raw)
+        ? raw
+        : ((raw && (raw.data || raw.salas || raw.rooms)) || []);
+
+      if (rawRooms.length === 0) {
+        ROOMS = [];
+        renderRooms();
+        renderFooterRooms([]);
+        return;
+      }
+
+      var normalized = rawRooms.map(normalizeRoom).filter(Boolean);
+      ROOMS = normalized;
+      renderRooms();
+      renderFooterRooms(normalized);
+    }
+
+    function handleFailure(err) {
+      console.warn('[Kyubi LiveRooms] Error de conexión con backend:', err.message || err);
+      if (roomsStatus) {
+        roomsStatus.innerHTML = '<span class="status-offline-pill">● Modo respaldo (backend desconectado)</span>';
+      }
+      if (footerRoomsGrid) {
+        renderFooterRooms(ROOMS_FALLBACK);
+        var warningNotice = document.createElement('div');
+        warningNotice.className = 'footer-rooms-warning';
+        warningNotice.innerHTML = '<span class="pulse-dot" style="background:#FFB300;box-shadow:0 0 8px #FFB300;"></span> <span>Mostrando salas de respaldo recomendadas</span>';
+        footerRoomsGrid.insertBefore(warningNotice, footerRoomsGrid.firstChild);
+      }
+    }
+
+    fetch(SALAS_API_ENDPOINT, { signal: controller ? controller.signal : undefined })
       .then(function (res) {
-        if (timeoutId) clearTimeout(timeoutId);
-        if (!res.ok) throw new Error('Status ' + res.status);
+        if (!res.ok) {
+          if (res.status === 404) {
+            return fetch(SALAS_FALLBACK_ENDPOINT, { signal: controller ? controller.signal : undefined })
+              .then(function (res2) {
+                if (!res2.ok) throw new Error('HTTP error! status: ' + res2.status);
+                return res2.json();
+              });
+          }
+          throw new Error('HTTP error! status: ' + res.status);
+        }
         return res.json();
       })
-      .then(function (data) {
-        if (Array.isArray(data) && data.length > 0) {
-          renderFooterRooms(data);
-        } else if (data && Array.isArray(data.rooms) && data.rooms.length > 0) {
-          renderFooterRooms(data.rooms);
-        } else {
-          renderFooterRooms(ROOMS);
-        }
-      })
-      .catch(function () {
+      .then(function (json) {
         if (timeoutId) clearTimeout(timeoutId);
-        // Fallback resiliente con datos cósmicos de ROOMS
-        renderFooterRooms(ROOMS);
+        applyData(json);
+      })
+      .catch(function (err) {
+        if (timeoutId) clearTimeout(timeoutId);
+        handleFailure(err);
       });
   }
 

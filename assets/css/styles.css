@@ -816,6 +816,49 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   background: linear-gradient(90deg, var(--primary), var(--secondary));
 }
 
+/* Estado vacío de salas (Liquid Glass) */
+.rooms-empty {
+  grid-column: 1 / -1;
+  padding: clamp(2.4rem, 5vw, 3.6rem) clamp(1.4rem, 3vw, 2.4rem);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.rooms-empty-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(186, 104, 200, 0.12);
+  border: 1px solid rgba(186, 104, 200, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  margin-bottom: 0.3rem;
+}
+.rooms-empty-icon svg {
+  width: 28px;
+  height: 28px;
+}
+.rooms-empty h3 {
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+.rooms-empty p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  max-width: 32rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
 .rooms-note {
   display: flex;
   align-items: center;
@@ -1501,6 +1544,75 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
+.footer-rooms-empty {
+  grid-column: 1 / -1;
+  padding: 1.25rem 1.4rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.footer-empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(186, 104, 200, 0.12);
+  border: 1px solid rgba(186, 104, 200, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.footer-empty-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.footer-empty-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.footer-empty-text {
+  font-size: 0.86rem;
+  color: var(--text-dim);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.footer-empty-btn {
+  padding: 0.45rem 0.95rem;
+  font-size: 0.8rem;
+  border-radius: 10px;
+}
+
+.footer-rooms-warning {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.76rem;
+  color: #FFB300;
+  padding: 0.4rem 0.8rem;
+  background: rgba(255, 179, 0, 0.08);
+  border: 1px solid rgba(255, 179, 0, 0.25);
+  border-radius: 8px;
+  margin-bottom: 0.2rem;
+}
+
+.status-offline-pill {
+  color: #FFB300;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
 /* --------------------------------------------------------------------------
    Footer: Divisor medio y Navegación (3 Columnas)
    -------------------------------------------------------------------------- */
@@ -2046,6 +2158,7 @@ body.modal-open {
   .footer-bottom-strip { padding: 0.8rem 1rem; }
   .footer-version-text { flex-direction: column; gap: 0.35rem; }
   .footer-cosmic-dot { display: none; }
+  .footer-rooms-empty { flex-direction: column; align-items: flex-start; gap: 0.9rem; }
 }
 
 /* Móviles muy estrechos (360px) */
