@@ -1501,25 +1501,261 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border: 1px dashed rgba(255, 255, 255, 0.08);
 }
 
-.footer-bottom {
+/* --------------------------------------------------------------------------
+   Footer: Divisor medio y Navegación (3 Columnas)
+   -------------------------------------------------------------------------- */
+.footer-mid-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08) 20%, rgba(255, 255, 255, 0.08) 80%, transparent);
+  margin-bottom: clamp(2rem, 4vw, 2.8rem);
+}
+
+.footer-nav-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr 1fr;
+  gap: clamp(1.8rem, 4vw, 3rem);
+  align-items: start;
+  padding-bottom: clamp(2rem, 4vw, 2.6rem);
+}
+
+.footer-nav-col {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Columna 1: Marca */
+.footer-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.footer-logo-crystal {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: .7rem;
-  padding-top: 1.4rem;
-  border-top: 1px solid var(--line);
-  color: var(--text-faint);
-  font-size: .78rem;
-  font-weight: 600;
-  text-align: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
-.footer-dot {
-  width: 5px;
-  height: 5px;
+
+.footer-brand-lockup:hover .footer-logo-crystal {
+  border-color: rgba(186, 104, 200, 0.45);
+  transform: translateY(-2px);
+}
+
+.footer-logo-crystal img {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  display: block;
+}
+
+.footer-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.footer-tagline {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Columnas 2 & 3: Encabezados y Listas */
+.footer-col-title {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0 0 0.25rem;
+}
+
+.footer-nav-list {
+  display: grid;
+  gap: 0.65rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-nav-list a {
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
+  width: fit-content;
+}
+
+.footer-nav-list a:hover {
+  color: var(--primary);
+  transform: translateX(2px);
+}
+
+/* Columna 3: Contacto (Email + Discord SVG) */
+.footer-contact-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.footer-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  width: fit-content;
+}
+
+.footer-email svg {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px;
+  max-width: 16px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  color: var(--primary);
+}
+
+.footer-email:hover {
+  color: var(--primary);
+}
+
+.footer-social-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.footer-social-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-social-btn svg {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px;
+  max-width: 20px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.footer-social-btn:hover {
+  background: rgba(88, 101, 242, 0.18);
+  border-color: rgba(88, 101, 242, 0.45);
+  color: #7289da;
+  transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   Barra de Derechos y Estado de Sistemas
+   -------------------------------------------------------------------------- */
+.footer-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  padding-block: 1.4rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-copyright {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  font-weight: 500;
+  margin: 0;
+}
+
+.footer-system-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text);
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(0, 230, 118, 0.08);
+  border: 1px solid rgba(0, 230, 118, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.status-pulse-emerald {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: var(--primary);
-  box-shadow: 0 0 8px var(--primary);
+  background: #00E676;
+  box-shadow: 0 0 8px #00E676;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* --------------------------------------------------------------------------
+   Franja de Versión y Comunidad (Bloque Inferior)
+   -------------------------------------------------------------------------- */
+.footer-bottom-strip {
+  padding: 0.85rem 1.4rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align: center;
+  margin-top: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.footer-version-text {
+  color: rgba(225, 190, 231, 0.75);
+  font-size: 0.78rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin: 0;
+}
+
+.footer-cosmic-dot {
+  color: var(--primary);
+  font-size: 0.95rem;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(186, 104, 200, 0.6);
 }
 
 /* --------------------------------------------------------------------------
@@ -1805,8 +2041,11 @@ body.modal-open {
   .install-steps li { flex-direction: row; }
   .footer-grid { grid-template-columns: minmax(0, 1fr); gap: 1.8rem; }
   .footer-rooms-grid { grid-template-columns: minmax(0, 1fr); }
-  .footer-bottom { flex-direction: column; gap: .4rem; }
-  .footer-dot { display: none; }
+  .footer-nav-grid { grid-template-columns: minmax(0, 1fr); gap: 1.8rem; }
+  .footer-status-bar { flex-direction: column; align-items: flex-start; gap: 0.85rem; }
+  .footer-bottom-strip { padding: 0.8rem 1rem; }
+  .footer-version-text { flex-direction: column; gap: 0.35rem; }
+  .footer-cosmic-dot { display: none; }
 }
 
 /* Móviles muy estrechos (360px) */
