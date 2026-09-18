@@ -146,12 +146,14 @@
     }
   ];
 
-  var ROOMS = ROOMS_FALLBACK.slice();
+  var ROOMS = [];
+  var isLoadingRooms = true;
 
   var ROOM_META = {
     roleplay: { label: 'Roleplay', className: 'badge-roleplay', color: '#FFB300', icon: 'sword' },
     cine: { label: 'Sala de Cine', className: 'badge-cine', color: '#FF1744', icon: 'film' },
-    voz: { label: 'Tertulia de Voz', className: 'badge-voz', color: '#00E5FF', icon: 'mic' }
+    voz: { label: 'Tertulia de Voz', className: 'badge-voz', color: '#00E5FF', icon: 'mic' },
+    standard: { label: 'Tertulia Social', className: 'badge-standard', color: '#BA68C8', icon: 'message' }
   };
 
   var roomsGrid = document.getElementById('rooms-grid');
@@ -163,50 +165,81 @@
     var icons = {
       mic: '<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/>',
       film: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 5v14M17 5v14M3 10h4M17 10h4M3 15h4M17 15h4"/>',
-      sword: '<polyline points="14.5 10.5 20 5 19 2 16 3l-5.5 5.5"/><path d="M13 12 4 21l-1-1 9-9"/><path d="m14 13 1.5 1.5L18 12l-1.5-1.5"/>'
+      sword: '<polyline points="14.5 10.5 20 5 19 2 16 3l-5.5 5.5"/><path d="M13 12 4 21l-1-1 9-9"/><path d="m14 13 1.5 1.5L18 12l-1.5-1.5"/>',
+      message: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'
     };
-    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + icons[name] + '</svg>';
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (icons[name] || icons.message) + '</svg>';
   }
 
   function normalizeRoom(r) {
     if (!r || typeof r !== 'object') return null;
-    var title = r.title || r.name || 'Sala comunitaria';
-    var rawMode = String(r.mode || r.currentMode || 'roleplay').toLowerCase().trim();
-    var mode = 'roleplay';
-    if (rawMode === 'cine' || rawMode === 'cinema' || rawMode === 'screening') {
+    var title = r.name || r.title || 'Sala comunitaria';
+    var description = (r.description && r.description.trim()) ? r.description.trim() : 'Sin descripción';
+
+    var rawMode = String(r.currentMode || r.mode || 'standard').toLowerCase().trim();
+    var isCinemaPlaying = (r.cinemaState === 'PLAYING');
+    var mode = 'standard';
+    if (rawMode === 'roleplay' || rawMode === 'rp') {
+      mode = 'roleplay';
+    } else if (rawMode === 'cinema' || rawMode === 'cine' || rawMode === 'screening' || isCinemaPlaying) {
       mode = 'cine';
-    } else if (rawMode === 'voz' || rawMode === 'voice') {
+    } else if (rawMode === 'voice' || rawMode === 'voz') {
       mode = 'voz';
-    } else if (ROOM_META[rawMode]) {
-      mode = rawMode;
+    } else {
+      mode = 'standard';
     }
 
-    var hostName = 'Anfitrión';
+    var hostName = 'Anónimo';
+    var hostAvatar = null;
     if (typeof r.host === 'string' && r.host.trim()) {
       hostName = r.host.trim();
     } else if (r.host && typeof r.host === 'object') {
-      hostName = r.host.displayName || r.host.username || 'Anfitrión';
+      hostName = r.host.displayName || r.host.username || 'Anónimo';
+      if (r.host.avatarUrl && typeof r.host.avatarUrl === 'string' && r.host.avatarUrl.trim()) {
+        hostAvatar = r.host.avatarUrl.trim();
+      }
     }
 
     var initials = r.initials;
     if (!initials) {
-      initials = hostName
-        .split(' ')
-        .filter(Boolean)
-        .map(function (w) { return w[0]; })
-        .join('')
-        .slice(0, 2)
-        .toUpperCase() || 'KB';
+      try {
+        var words = hostName.split(' ').filter(Boolean);
+        if (words.length >= 2) {
+          initials = (Array.from(words[0])[0] || '') + (Array.from(words[1])[0] || '');
+        } else if (words.length === 1) {
+          var chars = Array.from(words[0]);
+          initials = (chars[0] || '') + (chars[1] || '');
+        }
+      } catch (e) {
+        initials = hostName.slice(0, 2);
+      }
+      initials = (initials || 'KB').toUpperCase();
     }
 
-    var participants = typeof r.participants === 'number'
-      ? r.participants
-      : (typeof r.participantCount === 'number' ? r.participantCount : (Array.isArray(r.participants) ? r.participants.length : 0));
-    var max = typeof r.max === 'number'
-      ? r.max
-      : (typeof r.capacity === 'number' ? r.capacity : 10);
-    var tags = Array.isArray(r.tags) ? r.tags : [];
-    var description = r.description || (r.circle && r.circle.name ? 'Sala del círculo ' + r.circle.name : 'Sala comunitaria en vivo');
+    var participantCount = typeof r.participantCount === 'number'
+      ? r.participantCount
+      : (typeof r.participants === 'number' ? r.participants : (Array.isArray(r.participants) ? r.participants.length : 1));
+    if (!participantCount || participantCount < 1) {
+      participantCount = 1;
+    }
+
+    var capacity = (typeof r.capacity === 'number' && r.capacity > 0)
+      ? r.capacity
+      : (typeof r.max === 'number' && r.max > 0 ? r.max : 50);
+
+    var tags = (Array.isArray(r.tags) && r.tags.length > 0) ? r.tags.slice() : [];
+    if (tags.length === 0) {
+      if (mode === 'roleplay') {
+        tags = ['Comunidad', 'Roleplay', 'En Vivo'];
+      } else if (mode === 'cine') {
+        tags = ['Comunidad', 'Cine', 'En Vivo'];
+      } else if (mode === 'voz') {
+        tags = ['Comunidad', 'Voz', 'En Vivo'];
+      } else {
+        var modeName = r.currentMode || 'Social';
+        tags = ['Comunidad', 'En Vivo', modeName.charAt(0).toUpperCase() + modeName.slice(1)];
+      }
+    }
 
     return {
       id: r.id || ('sala-' + Math.random().toString(36).slice(2)),
@@ -214,15 +247,29 @@
       mode: mode,
       description: description,
       host: hostName,
+      avatar: hostAvatar,
       initials: initials,
-      participants: participants,
-      max: max,
+      participants: participantCount,
+      max: capacity,
       tags: tags
     };
   }
 
   function renderRooms() {
     if (!roomsGrid) return;
+
+    if (isLoadingRooms) {
+      roomsGrid.innerHTML =
+        '<div class="rooms-loading glass-card">' +
+          '<span class="pulse-dot" style="background:#BA68C8;box-shadow:0 0 10px #BA68C8;"></span>' +
+          '<span>Sincronizando salas en vivo con la red de Kyubi...</span>' +
+        '</div>';
+      if (roomsStatus) {
+        roomsStatus.textContent = 'Sincronizando salas...';
+      }
+      return;
+    }
+
     if (!ROOMS || ROOMS.length === 0) {
       roomsGrid.innerHTML =
         '<div class="rooms-empty glass-card">' +
@@ -243,7 +290,11 @@
     }
 
     var visible = ROOMS.filter(function (room) {
-      return activeFilter === 'all' || room.mode === activeFilter;
+      if (activeFilter === 'all') return true;
+      if (activeFilter === 'roleplay') return room.mode === 'roleplay';
+      if (activeFilter === 'cine') return room.mode === 'cine';
+      if (activeFilter === 'voz') return room.mode === 'voz' || room.mode === 'standard';
+      return room.mode === activeFilter;
     });
 
     if (visible.length === 0) {
@@ -262,8 +313,12 @@
     }
 
     roomsGrid.innerHTML = visible.map(function (room) {
-      var meta = ROOM_META[room.mode] || ROOM_META.roleplay;
-      var pct = Math.min(100, Math.round((room.participants / (room.max || 1)) * 100));
+      var meta = ROOM_META[room.mode] || ROOM_META.standard;
+      var pct = Math.min(100, Math.round(((room.participants || 1) / (room.max || 50)) * 100));
+      var hostAvatarHtml = room.avatar
+        ? '<img class="room-host-avatar" src="' + room.avatar + '" alt="' + room.host + '" width="26" height="26" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'inline-flex\';"><i style="display:none;">' + room.initials + '</i>'
+        : '<i>' + room.initials + '</i>';
+
       return (
         '<article class="room-card glass-card" style="--badge-color:' + meta.color + '">' +
           '<div class="room-card-top">' +
@@ -274,7 +329,7 @@
           '<p>' + room.description + '</p>' +
           '<div class="room-tags">' + (room.tags || []).map(function (tag) { return '<span>' + tag + '</span>'; }).join('') + '</div>' +
           '<div class="room-card-bottom">' +
-            '<span class="room-host"><i>' + room.initials + '</i>' + room.host + '</span>' +
+            '<span class="room-host">' + hostAvatarHtml + '<span>' + room.host + '</span></span>' +
             '<span class="room-meter" aria-hidden="true"><i style="width:' + pct + '%"></i></span>' +
           '</div>' +
         '</article>'
@@ -520,13 +575,17 @@
     }
 
     footerRoomsGrid.innerHTML = items.map(function (room) {
-      var modeKey = (room.mode && ROOM_META[room.mode]) ? room.mode : 'roleplay';
-      var meta = ROOM_META[modeKey];
+      var modeKey = (room.mode && ROOM_META[room.mode]) ? room.mode : 'standard';
+      var meta = ROOM_META[modeKey] || ROOM_META.standard;
       var hostName = room.host || 'Anfitrión';
       var initials = room.initials || hostName.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
       var tag = (room.tags && room.tags.length > 0) ? room.tags[0] : meta.label;
-      var participants = typeof room.participants === 'number' ? room.participants : 0;
-      var max = typeof room.max === 'number' ? room.max : 10;
+      var participants = typeof room.participants === 'number' ? room.participants : 1;
+      var max = typeof room.max === 'number' ? room.max : 50;
+
+      var footerAvatarHtml = room.avatar
+        ? '<img class="footer-host-avatar" src="' + room.avatar + '" alt="' + hostName + '" width="17" height="17" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'inline-flex\';"><i style="display:none;">' + initials + '</i>'
+        : '<i>' + initials + '</i>';
 
       return (
         '<a class="footer-room-mini" href="#salas" aria-label="' + room.title + ' — ' + meta.label + '">' +
@@ -539,7 +598,7 @@
           '</div>' +
           '<h5 class="footer-room-mini-title">' + room.title + '</h5>' +
           '<div class="footer-room-mini-meta">' +
-            '<span class="footer-room-mini-host"><i>' + initials + '</i>' + hostName + '</span>' +
+            '<span class="footer-room-mini-host">' + footerAvatarHtml + hostName + '</span>' +
             '<span class="footer-room-mini-tag">' + tag + '</span>' +
           '</div>' +
         '</a>'
@@ -552,6 +611,7 @@
     var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 12000) : null;
 
     function applyData(raw) {
+      isLoadingRooms = false;
       var rawRooms = Array.isArray(raw)
         ? raw
         : ((raw && (raw.data || raw.salas || raw.rooms)) || []);
@@ -570,12 +630,16 @@
     }
 
     function handleFailure(err) {
+      isLoadingRooms = false;
       console.warn('[Kyubi LiveRooms] Error de conexión con backend:', err.message || err);
       if (roomsStatus) {
         roomsStatus.innerHTML = '<span class="status-offline-pill">● Modo respaldo (backend desconectado)</span>';
       }
+      var fallbackNormalized = ROOMS_FALLBACK.map(normalizeRoom);
+      ROOMS = fallbackNormalized;
+      renderRooms();
       if (footerRoomsGrid) {
-        renderFooterRooms(ROOMS_FALLBACK);
+        renderFooterRooms(fallbackNormalized);
         var warningNotice = document.createElement('div');
         warningNotice.className = 'footer-rooms-warning';
         warningNotice.innerHTML = '<span class="pulse-dot" style="background:#FFB300;box-shadow:0 0 8px #FFB300;"></span> <span>Mostrando salas de respaldo recomendadas</span>';
