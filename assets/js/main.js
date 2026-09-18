@@ -403,7 +403,94 @@
     }
   });
 
-  /* ---------- 9. Año dinámico del footer ---------- */
+  /* ---------- 9. Salas activas en vivo (Footer Liquid Glass) ---------- */
+  var footerRoomsGrid = document.getElementById('footer-active-rooms');
+
+  function renderFooterRooms(roomsList) {
+    if (!footerRoomsGrid) return;
+    var items = (roomsList || []).slice(0, 4);
+    if (!items.length) {
+      footerRoomsGrid.innerHTML = '<div class="footer-rooms-loading">No hay salas disponibles en este momento.</div>';
+      return;
+    }
+
+    footerRoomsGrid.innerHTML = items.map(function (room) {
+      var modeKey = (room.mode && ROOM_META[room.mode]) ? room.mode : 'roleplay';
+      var meta = ROOM_META[modeKey];
+      var hostName = room.host || 'Anfitrión';
+      var initials = room.initials || hostName.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+      var tag = (room.tags && room.tags.length > 0) ? room.tags[0] : meta.label;
+      var participants = typeof room.participants === 'number' ? room.participants : 1;
+      var max = typeof room.max === 'number' ? room.max : 10;
+
+      return (
+        '<a class="footer-room-mini" href="#salas" aria-label="' + room.title + ' — ' + meta.label + '">' +
+          '<div class="footer-room-mini-head">' +
+            '<span class="footer-room-mini-badge ' + meta.className + '">' +
+              svgIcon(meta.icon) +
+              meta.label +
+            '</span>' +
+            '<span class="footer-room-mini-capacity">' + participants + '/' + max + ' miembros</span>' +
+          '</div>' +
+          '<h5 class="footer-room-mini-title">' + room.title + '</h5>' +
+          '<div class="footer-room-mini-meta">' +
+            '<span class="footer-room-mini-host"><i>' + initials + '</i>' + hostName + '</span>' +
+            '<span class="footer-room-mini-tag">' + tag + '</span>' +
+          '</div>' +
+        '</a>'
+      );
+    }).join('');
+  }
+
+  function fetchLiveRooms() {
+    if (!footerRoomsGrid) return;
+
+    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 2500) : null;
+
+    fetch('/api/salas', {
+      signal: controller ? controller.signal : undefined
+    })
+      .then(function (res) {
+        if (timeoutId) clearTimeout(timeoutId);
+        if (!res.ok) throw new Error('Status ' + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (Array.isArray(data) && data.length > 0) {
+          renderFooterRooms(data);
+        } else if (data && Array.isArray(data.rooms) && data.rooms.length > 0) {
+          renderFooterRooms(data.rooms);
+        } else {
+          renderFooterRooms(ROOMS);
+        }
+      })
+      .catch(function () {
+        if (timeoutId) clearTimeout(timeoutId);
+        // Fallback resiliente con datos cósmicos de ROOMS
+        renderFooterRooms(ROOMS);
+      });
+  }
+
+  if (footerRoomsGrid) {
+    footerRoomsGrid.addEventListener('click', function (e) {
+      var link = e.target.closest('a[href^="#"]');
+      if (!link) return;
+      var hash = link.getAttribute('href');
+      if (!hash || hash === '#') return;
+      var target = document.querySelector(hash);
+      if (!target) return;
+      e.preventDefault();
+      var offset = header ? header.offsetHeight + 10 : 84;
+      var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: top, behavior: reduceMotion ? 'auto' : 'smooth' });
+      history.replaceState(null, '', hash);
+    });
+  }
+
+  fetchLiveRooms();
+
+  /* ---------- 10. Año dinámico del footer ---------- */
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-})();
+})();

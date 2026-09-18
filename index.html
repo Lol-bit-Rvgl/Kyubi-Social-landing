@@ -385,34 +385,31 @@
             <span class="brand-logo"><img src="assets/img/kyubi-app-logo.webp" alt="" width="34" height="34"></span>
             <span class="brand-text"><strong>Kyubi</strong><small>Social &amp; Roleplay</small></span>
           </a>
-          <p>Socializa, crea historias y vive el roleplay en tiempo real. La nueva plataforma para Android con estilo Universal Liquid Glass.</p>
+          <p class="footer-brand-desc">Una plataforma creada por la comunidad, para la comunidad. Ven a rolear, a ver salas de cine y tertulias de voz en tiempo real.</p>
+          <div class="footer-brand-cta">
+            <a class="btn btn-download btn-sm" href="#descarga">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+              Acceso Beta (Pronto)
+            </a>
+          </div>
         </div>
 
-        <nav class="footer-col" aria-label="Explorar">
-          <h4>Explorar</h4>
-          <ul>
-            <li><a href="#modulos">Módulos</a></li>
-            <li><a href="#identidad">Identidad Cósmica</a></li>
-            <li><a href="#salas">Salas en vivo</a></li>
-            <li><a href="#comunidad">Comunidad Discord</a></li>
-            <li><a href="#descarga">Descargar APK</a></li>
-          </ul>
-        </nav>
-
-        <div class="footer-col">
-          <h4>Recursos</h4>
-          <ul>
-            <li><a href="#descarga" class="download-link">APK v1.2.0-beta (Pronto)</a></li>
-            <li><a href="https://discord.gg/JNT7Payj3F" target="_blank" rel="noopener noreferrer">Discord oficial</a></li>
-            <li><a href="#descarga">Guía de instalación</a></li>
-            <li><a href="#salas">Estado del backend</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col footer-cta">
-          <h4>Tu grupo te espera</h4>
-          <p>La fase beta se abrirá muy pronto. Únete a nuestra comunidad para ser de los primeros.</p>
-          <a class="btn btn-download" href="#descarga">Acceso a la Beta</a>
+        <div class="footer-live-rooms glass-card">
+          <div class="footer-rooms-head">
+            <div class="footer-rooms-title">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <h4>Salas activas en este momento</h4>
+            </div>
+            <a class="footer-rooms-more" href="#salas">
+              Ver todas
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+          <div class="footer-rooms-grid" id="footer-active-rooms">
+            <div class="footer-rooms-loading">
+              <span class="pulse-dot" aria-hidden="true"></span> Conectando con las salas en vivo...
+            </div>
+          </div>
         </div>
       </div>
 

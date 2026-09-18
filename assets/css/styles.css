@@ -1283,27 +1283,223 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr .8fr .9fr 1fr;
-  gap: 2.4rem;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.45fr);
+  gap: clamp(1.8rem, 4vw, 3rem);
+  align-items: start;
   padding-bottom: 2.6rem;
 }
-.footer-brand { display: grid; gap: 1rem; align-content: start; justify-items: start; }
-.footer-brand p { color: var(--text-dim); font-size: .9rem; max-width: 30rem; }
 
-.footer-col h4 {
-  font-size: .74rem;
-  font-weight: 800;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 1rem;
+.footer-brand {
+  display: grid;
+  gap: 1.1rem;
+  align-content: start;
+  justify-items: start;
 }
-.footer-col ul { display: grid; gap: .55rem; }
-.footer-col ul a { color: var(--text-dim); font-size: .92rem; font-weight: 600; transition: color .2s ease; }
-.footer-col ul a:hover { color: var(--secondary); }
 
-.footer-cta { display: grid; gap: .8rem; align-content: start; justify-items: start; }
-.footer-cta p { color: var(--text-dim); font-size: .9rem; }
+.footer-brand-desc {
+  color: var(--text-dim);
+  font-size: 0.94rem;
+  line-height: 1.6;
+  max-width: 32rem;
+}
+
+.footer-brand-cta {
+  margin-top: 0.35rem;
+}
+
+.footer-brand-cta .btn {
+  padding: 0.68rem 1.3rem;
+  font-size: 0.88rem;
+  box-shadow: var(--glow-primary);
+}
+
+/* Contenedor Liquid Glass de Salas en Vivo en Footer */
+.footer-live-rooms {
+  padding: clamp(1.2rem, 2.5vw, 1.6rem);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 20px 50px -25px rgba(0, 0, 0, 0.6);
+  display: grid;
+  gap: 1.1rem;
+}
+
+.footer-rooms-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.footer-rooms-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.footer-rooms-title h4 {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0;
+}
+
+.footer-rooms-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-rooms-more svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 0.2s ease;
+}
+
+.footer-rooms-more:hover {
+  color: var(--secondary);
+}
+
+.footer-rooms-more:hover svg {
+  transform: translateX(3px);
+}
+
+.footer-rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.footer-room-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.065);
+  transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+  position: relative;
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer-room-mini:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(186, 104, 200, 0.38);
+  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.5);
+}
+
+.footer-room-mini-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.footer-room-mini-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.26rem 0.6rem;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.footer-room-mini-badge svg {
+  width: 11px;
+  height: 11px;
+}
+
+.footer-room-mini-capacity {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.footer-room-mini-title {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.35;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer-room-mini-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.76rem;
+  color: var(--text-faint);
+}
+
+.footer-room-mini-host {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.footer-room-mini-host i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  font-size: 0.58rem;
+  font-style: normal;
+  font-weight: 800;
+  background: rgba(186, 104, 200, 0.22);
+  color: var(--primary);
+}
+
+.footer-room-mini-tag {
+  font-size: 0.7rem;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footer-rooms-loading {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.8rem 1rem;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+}
 
 .footer-bottom {
   display: flex;
@@ -1551,8 +1747,7 @@ body.modal-open {
 @media (max-width: 1080px) {
   .modules-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .rooms-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .footer-grid { grid-template-columns: 1.3fr 1fr 1fr; }
-  .footer-col.footer-cta { grid-column: 1 / -1; }
+  .footer-grid { grid-template-columns: minmax(0, 1fr); gap: 2.2rem; }
 }
 
 @media (max-width: 960px) {
@@ -1609,6 +1804,7 @@ body.modal-open {
   .spec-list { grid-template-columns: minmax(0, 1fr); }
   .install-steps li { flex-direction: row; }
   .footer-grid { grid-template-columns: minmax(0, 1fr); gap: 1.8rem; }
+  .footer-rooms-grid { grid-template-columns: minmax(0, 1fr); }
   .footer-bottom { flex-direction: column; gap: .4rem; }
   .footer-dot { display: none; }
 }
