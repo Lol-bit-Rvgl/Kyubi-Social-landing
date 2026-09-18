@@ -236,53 +236,73 @@
 
   /* ---------- 7. Widget interactivo de Discord en vivo ---------- */
   var DISCORD_GUILD_ID = '1517518293211025560';
-  var DISCORD_INVITE_CODE = 'JNT7Payj3F';
+  var DEFAULT_INVITE = 'https://discord.gg/JNT7Payj3F';
   var WIDGET_URL = 'https://discord.com/api/guilds/' + DISCORD_GUILD_ID + '/widget.json';
-  var INVITE_URL = 'https://discord.com/api/v9/invites/' + DISCORD_INVITE_CODE + '?with_counts=true';
+  var INVITE_URL = 'https://discord.com/api/v9/invites/JNT7Payj3F?with_counts=true';
 
   var serverNameEl = document.getElementById('discord-server-name');
   var onlineCountEl = document.getElementById('discord-online-count');
-  var membersEl = document.getElementById('discord-members');
+  var membersListEl = document.getElementById('discord-members-list') || document.getElementById('discord-members');
   var iframeWrapper = document.getElementById('discord-iframe-wrapper');
 
   function showIframeFallback() {
     if (iframeWrapper) iframeWrapper.style.display = 'block';
-    if (membersEl) membersEl.style.display = 'none';
+    if (membersListEl) membersListEl.style.display = 'none';
+  }
+
+  function showMembersList() {
+    if (iframeWrapper) iframeWrapper.style.display = 'none';
+    if (membersListEl) membersListEl.style.display = 'grid';
+  }
+
+  function updateInviteLinks(inviteUrl) {
+    var url = inviteUrl || DEFAULT_INVITE;
+    document.querySelectorAll('.discord-cta-btn, .discord-card-footer a').forEach(function (btn) {
+      btn.setAttribute('href', url);
+    });
   }
 
   function renderMembers(members) {
-    if (!membersEl) return;
+    if (!membersListEl) return;
     if (!members || !members.length) {
       showIframeFallback();
       return;
     }
+    showMembersList();
+
     var statusOrder = { online: 1, idle: 2, dnd: 3 };
     var sorted = members.slice().sort(function (a, b) {
       return (statusOrder[a.status] || 4) - (statusOrder[b.status] || 4);
     });
 
-    membersEl.innerHTML = sorted.map(function (m) {
-      var avatar = m.avatar_url || 'https://cdn.discordapp.com/embed/avatars/0.png';
+    membersListEl.innerHTML = sorted.map(function (m) {
+      var username = (m.username || 'Usuario').trim();
+      var initials = username.charAt(0).toUpperCase() || 'K';
       var status = m.status || 'online';
-      var activity = m.game ? m.game.name : '';
-      var statusText = status === 'online' ? 'En línea' : (status === 'idle' ? 'Ausente' : 'Ocupado');
+      var statusClass = (status === 'idle' || status === 'dnd') ? status : 'online';
+      var statusTitle = status === 'online' ? 'En línea' : (status === 'idle' ? 'Ausente' : 'Ocupado');
+      var activityName = (m.game && m.game.name) ? m.game.name : (m.activity && m.activity.name ? m.activity.name : '');
+
+      var avatarHtml = m.avatar_url
+        ? '<img src="' + m.avatar_url + '" alt="' + username + '" width="32" height="32" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\';"><span class="discord-avatar-monogram" style="display:none;">' + initials + '</span>'
+        : '<span class="discord-avatar-monogram">' + initials + '</span>';
 
       return (
-        '<div class="discord-member">' +
+        '<div class="discord-member-item">' +
           '<div class="discord-avatar">' +
-            '<img src="' + avatar + '" alt="' + (m.username || 'Usuario') + '" width="32" height="32" loading="lazy">' +
-            '<span class="discord-avatar-status ' + status + '" title="' + statusText + '"></span>' +
+            avatarHtml +
+            '<span class="discord-avatar-status ' + statusClass + '" title="' + statusTitle + '"></span>' +
           '</div>' +
           '<div class="discord-member-info">' +
-            '<span class="discord-member-name">' + (m.username || 'Usuario') + '</span>' +
-            '<span class="discord-member-activity">' + (activity ? activity : statusText) + '</span>' +
+            '<span class="discord-member-name" title="' + username + '">' + username + '</span>' +
+            (activityName ? '<span class="discord-member-activity" title="' + activityName + '">' + activityName + '</span>' : '') +
           '</div>' +
         '</div>'
       );
     }).join('');
   }
 
-  function fetchDiscordPresence() {
+  function initDiscordWidget() {
     if (!onlineCountEl) return;
 
     fetch(WIDGET_URL)
@@ -291,13 +311,17 @@
         return res.json();
       })
       .then(function (data) {
-        if (serverNameEl && data.name) {
-          serverNameEl.textContent = data.name;
+        if (serverNameEl) {
+          serverNameEl.textContent = data.name || 'Kyubi Community';
         }
         var count = typeof data.presence_count === 'number'
           ? data.presence_count
           : (data.members ? data.members.length : 0);
-        onlineCountEl.textContent = count + ' en línea';
+        onlineCountEl.textContent = count + ' Miembros en línea';
+
+        if (data.instant_invite) {
+          updateInviteLinks(data.instant_invite);
+        }
 
         if (data.members && data.members.length > 0) {
           renderMembers(data.members);
@@ -306,10 +330,10 @@
         }
       })
       .catch(function () {
-        // Fallback CORS o Widget Deshabilitado: consultar conteo público del invite
+        // Fallback resiliente: consultar conteo público del invite
         fetch(INVITE_URL)
           .then(function (res) {
-            if (!res.ok) throw new Error('Invite fetch failed');
+            if (!res.ok) throw new Error('Invite endpoint failed');
             return res.json();
           })
           .then(function (inv) {
@@ -317,17 +341,17 @@
               serverNameEl.textContent = inv.guild.name;
             }
             var count = inv.approximate_presence_count || 174;
-            onlineCountEl.textContent = count + ' en línea';
+            onlineCountEl.textContent = count + ' Miembros en línea';
             showIframeFallback();
           })
           .catch(function () {
-            onlineCountEl.textContent = '+170 en línea';
+            onlineCountEl.textContent = '+170 Miembros en línea';
             showIframeFallback();
           });
       });
   }
 
-  fetchDiscordPresence();
+  initDiscordWidget();
 
   /* ---------- 8. Año dinámico del footer ---------- */
   var yearEl = document.getElementById('year');

@@ -1025,40 +1025,52 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   min-height: 140px;
 }
 
+.discord-members-list,
 .discord-members {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: .65rem;
-  max-height: 260px;
+  gap: 10px;
+  max-height: 280px;
   overflow-y: auto;
-  padding-right: .4rem;
+  padding-right: 6px;
 }
 
+.discord-members-list::-webkit-scrollbar,
 .discord-members::-webkit-scrollbar {
   width: 6px;
 }
+.discord-members-list::-webkit-scrollbar-track,
 .discord-members::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, .03);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 99px;
 }
+.discord-members-list::-webkit-scrollbar-thumb,
 .discord-members::-webkit-scrollbar-thumb {
-  background: rgba(88, 101, 242, .4);
+  background: linear-gradient(180deg, rgba(186, 104, 200, 0.55), rgba(124, 77, 255, 0.45));
   border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.discord-members-list::-webkit-scrollbar-thumb:hover,
+.discord-members::-webkit-scrollbar-thumb:hover {
+  background: rgba(186, 104, 200, 0.75);
 }
 
+.discord-member-item,
 .discord-member {
   display: flex;
   align-items: center;
-  gap: .65rem;
-  padding: .5rem .7rem;
+  gap: 12px;
+  padding: 8px 12px;
   border-radius: 12px;
   background: var(--surface-2);
   border: 1px solid var(--line);
-  transition: background .2s ease, border-color .2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
+.discord-member-item:hover,
 .discord-member:hover {
-  background: rgba(255, 255, 255, .06);
-  border-color: rgba(88, 101, 242, .4);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(186, 104, 200, 0.4);
+  transform: translateY(-1px);
 }
 
 .discord-avatar {
@@ -1072,7 +1084,24 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
-  background: rgba(255, 255, 255, .05);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(186, 104, 200, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: block;
+}
+.discord-avatar-monogram {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(186, 104, 200, 0.18);
+  border: 1px solid rgba(186, 104, 200, 0.35);
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(186, 104, 200, 0.22);
 }
 .discord-avatar-status {
   position: absolute;
@@ -1083,18 +1112,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border-radius: 50%;
   border: 2px solid #161024;
 }
-.discord-avatar-status.online { background: #00E676; }
-.discord-avatar-status.idle { background: #FFB300; }
-.discord-avatar-status.dnd { background: #FF1744; }
+.discord-avatar-status.online { background: #00E676; box-shadow: 0 0 6px #00E676; }
+.discord-avatar-status.idle { background: #FFB300; box-shadow: 0 0 6px #FFB300; }
+.discord-avatar-status.dnd { background: #FF1744; box-shadow: 0 0 6px #FF1744; }
 
 .discord-member-info {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  line-height: 1.2;
+  line-height: 1.25;
+  min-width: 0;
 }
 .discord-member-name {
-  font-size: .84rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--text);
   overflow: hidden;
@@ -1102,7 +1132,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   white-space: nowrap;
 }
 .discord-member-activity {
-  font-size: .7rem;
+  font-size: 11px;
   color: var(--text-faint);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1352,6 +1382,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .identity-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .discord-card-header { flex-direction: column; align-items: flex-start; }
   .discord-card-header .btn { width: 100%; }
+  .discord-members-list,
   .discord-members { grid-template-columns: minmax(0, 1fr); }
   .discord-card-footer { flex-direction: column; align-items: flex-start; }
   .discord-card-footer .btn { width: 100%; }
