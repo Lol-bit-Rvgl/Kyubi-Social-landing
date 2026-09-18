@@ -39,37 +39,71 @@
     });
   }
 
-  /* ---------- 2. Scroll suave con offset del navbar ---------- */
-  document.querySelectorAll('a[href^="#"]').forEach(function (link) {
-    link.addEventListener('click', function (event) {
-      if (link.classList.contains('btn-download') || link.classList.contains('download-btn') || link.classList.contains('download-link')) return;
-      var hash = link.getAttribute('href');
-      if (!hash || hash === '#') return;
-      var target = document.querySelector(hash);
-      if (!target) return;
-      event.preventDefault();
-      var offset = header ? header.offsetHeight + 10 : 84;
-      var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-      window.scrollTo({ top: top, behavior: reduceMotion ? 'auto' : 'smooth' });
-      history.replaceState(null, '', hash);
+  /* ---------- 2. Controlador de Scroll Cinemático ---------- */
+  function smoothScrollToTarget(targetId) {
+    if (!targetId || targetId === '#' || targetId === '#!') return;
+    var target;
+    try {
+      target = document.querySelector(targetId);
+    } catch (e) {
+      target = null;
+    }
+    if (!target) return;
+
+    closeMenu();
+
+    var navOffset = header ? (header.offsetHeight || 88) : 88;
+    var targetPosition = target.getBoundingClientRect().top + window.pageYOffset - navOffset;
+
+    window.scrollTo({
+      top: Math.max(0, targetPosition),
+      behavior: reduceMotion ? 'auto' : 'smooth'
     });
+
+    if (window.history && window.history.pushState) {
+      window.history.pushState(null, null, targetId);
+    }
+  }
+
+  document.addEventListener('click', function (event) {
+    var link = event.target.closest('a[href^="#"]');
+    if (!link) return;
+    // Prevenir conflicto con los botones o enlaces que abren el modal de descarga
+    if (link.closest('.btn-download, .download-btn, .download-link, a[href*=".apk"], a[href="#descarga"].btn')) return;
+
+    var hash = link.getAttribute('href');
+    if (!hash || hash === '#' || hash === '#!') return;
+
+    event.preventDefault();
+    smoothScrollToTarget(hash);
   });
 
-  /* ---------- 3. Animaciones de aparición (IntersectionObserver) ---------- */
-  var revealEls = document.querySelectorAll('.reveal');
-  if (reduceMotion || !('IntersectionObserver' in window)) {
-    revealEls.forEach(function (el) { el.classList.add('visible'); });
-  } else {
-    var io = new IntersectionObserver(function (entries) {
+  /* ---------- 3. Animaciones de entrada fluida (IntersectionObserver) ---------- */
+  var revealObserver = null;
+  if (!reduceMotion && ('IntersectionObserver' in window)) {
+    revealObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          io.unobserve(entry.target);
+          entry.target.classList.add('visible', 'is-visible');
+          revealObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
-    revealEls.forEach(function (el) { io.observe(el); });
+    }, { threshold: 0.12, rootMargin: '0px 0px -30px 0px' });
   }
+
+  function observeRevealElements(container) {
+    var scope = container || document;
+    var els = scope.querySelectorAll('.reveal, .reveal-on-scroll');
+    els.forEach(function (el) {
+      if (reduceMotion || !revealObserver) {
+        el.classList.add('visible', 'is-visible');
+      } else {
+        revealObserver.observe(el);
+      }
+    });
+  }
+
+  observeRevealElements(document);
 
   /* ---------- Configuración de API de Backend ---------- */
   var BACKEND_URL = window.KYUBI_API_URL || 'https://kyubi-social-backend-1.onrender.com';
@@ -208,7 +242,7 @@
         : '<span class="avatar-monogram">' + initials + '</span>';
 
       return (
-        '<article class="community-card glass-card">' +
+        '<article class="community-card glass-card reveal-on-scroll">' +
           '<div class="community-card-top">' +
             '<div class="avatar-halo-wrap">' +
               '<div class="avatar-halo"></div>' +
@@ -238,7 +272,7 @@
     }).join('');
 
     var ctaCardHtml =
-      '<article class="community-card community-cta-card glass-card">' +
+      '<article class="community-card community-cta-card glass-card reveal-on-scroll">' +
         '<div class="community-cta-icon" aria-hidden="true">' +
           '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>' +
         '</div>' +
@@ -255,6 +289,7 @@
       '</article>';
 
     communityGrid.innerHTML = cardsHtml + ctaCardHtml;
+    observeRevealElements(communityGrid);
   }
 
   /* ---------- 5. Guía de instalación colapsable ---------- */

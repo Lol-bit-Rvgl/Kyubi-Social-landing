@@ -32,10 +32,10 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-padding-top: calc(var(--nav-h) + 16px); }
-
-@media (prefers-reduced-motion: no-preference) {
-  html { scroll-behavior: smooth; }
+html {
+  scroll-padding-top: calc(var(--nav-h) + 16px);
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -48,6 +48,14 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Compensación de scroll para navbar fijo */
+section[id],
+div[id],
+footer[id] {
+  scroll-margin-top: 96px;
 }
 
 img { max-width: 100%; display: block; }
@@ -419,13 +427,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
 }
 
-.reveal {
+.reveal,
+.reveal-on-scroll {
   opacity: 0;
-  transform: translateY(26px);
-  transition: opacity .7s ease, transform .7s ease;
+  transform: translateY(24px);
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
 }
 .reveal-delay { transition-delay: .12s; }
-.reveal.visible { opacity: 1; transform: none; }
+.reveal.visible,
+.reveal.is-visible,
+.reveal-on-scroll.visible,
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 /* --------------------------------------------------------------------------
    Hero
@@ -2308,7 +2324,7 @@ body.modal-open {
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
-  .reveal { opacity: 1; transform: none; }
+  .reveal, .reveal-on-scroll { opacity: 1 !important; transform: none !important; }
 }
 
 @media print {
