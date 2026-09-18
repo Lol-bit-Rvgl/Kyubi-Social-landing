@@ -42,6 +42,7 @@
   /* ---------- 2. Scroll suave con offset del navbar ---------- */
   document.querySelectorAll('a[href^="#"]').forEach(function (link) {
     link.addEventListener('click', function (event) {
+      if (link.classList.contains('btn-download') || link.classList.contains('download-btn') || link.classList.contains('download-link')) return;
       var hash = link.getAttribute('href');
       if (!hash || hash === '#') return;
       var target = document.querySelector(hash);
@@ -353,7 +354,56 @@
 
   initDiscordWidget();
 
-  /* ---------- 8. Año dinámico del footer ---------- */
+  /* ---------- 8. Modal Próximamente en Beta (Coming Soon) ---------- */
+  var comingSoonModal = document.getElementById('coming-soon-modal');
+  var modalCloseBtn = document.getElementById('modal-close-btn');
+
+  function openComingSoonModal(e) {
+    if (e && typeof e.preventDefault === 'function') {
+      e.preventDefault();
+    }
+    if (!comingSoonModal) return;
+    comingSoonModal.classList.add('is-active');
+    comingSoonModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeComingSoonModal() {
+    if (!comingSoonModal) return;
+    comingSoonModal.classList.remove('is-active');
+    comingSoonModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+  }
+
+  // Interceptar todos los botones y enlaces de descarga
+  var downloadTriggers = document.querySelectorAll(
+    '.btn-download, .download-btn, .download-link, a[href*=".apk"], a[href="#descarga"].btn'
+  );
+  downloadTriggers.forEach(function (trigger) {
+    trigger.addEventListener('click', function (e) {
+      openComingSoonModal(e);
+    });
+  });
+
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener('click', closeComingSoonModal);
+  }
+
+  if (comingSoonModal) {
+    comingSoonModal.addEventListener('click', function (e) {
+      if (e.target === comingSoonModal) {
+        closeComingSoonModal();
+      }
+    });
+  }
+
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && comingSoonModal && comingSoonModal.classList.contains('is-active')) {
+      closeComingSoonModal();
+    }
+  });
+
+  /* ---------- 9. Año dinámico del footer ---------- */
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 })();
