@@ -320,23 +320,6 @@
     });
   }
 
-  /* ---------- 6. Tamaño real del APK (verificación por HEAD) ---------- */
-  var apkSizeEl = document.getElementById('apk-size');
-  var downloadBtn = document.querySelector('.download-btn');
-  var apkUrl = downloadBtn ? downloadBtn.getAttribute('href') : null;
-  if (apkSizeEl && apkUrl && 'fetch' in window) {
-    fetch(apkUrl, { method: 'HEAD' })
-      .then(function (response) {
-        if (!response.ok) return;
-        var length = parseInt(response.headers.get('Content-Length'), 10);
-        if (!length || length < 1000) return;
-        var mb = length / (1024 * 1024);
-        apkSizeEl.textContent = mb >= 10
-          ? Math.round(mb) + ' MB'
-          : mb.toFixed(1) + ' MB';
-      })
-      .catch(function () { /* mantiene el valor estático de respaldo */ });
-  }
 
   /* ---------- 7. Widget interactivo de Discord en vivo ---------- */
   var DISCORD_GUILD_ID = '1517518293211025560';
