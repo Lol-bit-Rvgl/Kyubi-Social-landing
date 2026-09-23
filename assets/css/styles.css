@@ -812,7 +812,79 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   color: var(--text-dim);
 }
 
-/* Grilla Dinámica de Pioneros */
+/* Filtros por Categoría del Equipo (Liquid Glass Tabs) */
+.team-filters {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-bottom: 2.4rem;
+  flex-wrap: wrap;
+}
+
+.team-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.52rem 1.15rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--text-dim);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.team-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(186, 104, 200, 0.35);
+  color: var(--text);
+  transform: translateY(-2px);
+}
+
+.team-filter-btn.is-active {
+  background: linear-gradient(135deg, rgba(186, 104, 200, 0.22), rgba(124, 77, 255, 0.16));
+  border-color: rgba(186, 104, 200, 0.65);
+  color: #fff;
+  box-shadow: 0 4px 20px -4px rgba(186, 104, 200, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.filter-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.1rem 0.48rem;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  transition: all 0.2s ease;
+}
+
+.team-filter-btn:hover .filter-count {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.team-filter-btn.is-active .filter-count {
+  background: rgba(186, 104, 200, 0.35);
+  border-color: rgba(186, 104, 200, 0.6);
+  color: #fff;
+}
+
+/* Grilla Dinámica del Directorio del Equipo */
 .community-profiles-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -881,6 +953,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   filter: blur(8px);
 }
 
+/* Halos Cromáticos por Categoría */
+.avatar-halo.halo-founder {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.85), rgba(217, 119, 6, 0.45), transparent);
+}
+.avatar-halo.halo-mod {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.85), rgba(124, 58, 237, 0.45), transparent);
+}
+.avatar-halo.halo-design {
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.85), rgba(14, 165, 233, 0.45), transparent);
+}
+.avatar-halo.halo-volunteer {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.85), rgba(5, 150, 105, 0.45), transparent);
+}
+
 @keyframes cosmicHaloPulse {
   0% { transform: rotate(0deg) scale(0.96); opacity: 0.55; }
   100% { transform: rotate(180deg) scale(1.05); opacity: 0.85; }
@@ -921,6 +1007,26 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   background: rgba(186, 104, 200, 0.16);
 }
 
+.avatar-monogram.monogram-founder {
+  background: rgba(245, 158, 11, 0.16);
+  color: #F59E0B;
+}
+
+.avatar-monogram.monogram-mod {
+  background: rgba(168, 85, 247, 0.16);
+  color: #C084FC;
+}
+
+.avatar-monogram.monogram-design {
+  background: rgba(6, 182, 212, 0.16);
+  color: #22D3EE;
+}
+
+.avatar-monogram.monogram-volunteer {
+  background: rgba(16, 185, 129, 0.16);
+  color: #34D399;
+}
+
 .community-card-badges {
   display: flex;
   align-items: center;
@@ -943,10 +1049,31 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 .badge-founder {
-  background: rgba(255, 179, 0, 0.12);
-  color: #FFB300;
-  border: 1px solid rgba(255, 179, 0, 0.38);
-  box-shadow: 0 0 12px -3px rgba(255, 179, 0, 0.35);
+  background: rgba(245, 158, 11, 0.14);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  box-shadow: 0 0 14px -2px rgba(245, 158, 11, 0.38);
+}
+
+.badge-mod {
+  background: rgba(168, 85, 247, 0.14);
+  color: #C084FC;
+  border: 1px solid rgba(168, 85, 247, 0.42);
+  box-shadow: 0 0 14px -2px rgba(168, 85, 247, 0.35);
+}
+
+.badge-design {
+  background: rgba(6, 182, 212, 0.14);
+  color: #22D3EE;
+  border: 1px solid rgba(6, 182, 212, 0.42);
+  box-shadow: 0 0 14px -2px rgba(6, 182, 212, 0.35);
+}
+
+.badge-volunteer {
+  background: rgba(16, 185, 129, 0.14);
+  color: #34D399;
+  border: 1px solid rgba(16, 185, 129, 0.42);
+  box-shadow: 0 0 14px -2px rgba(16, 185, 129, 0.35);
 }
 
 .badge-dev {
@@ -2285,6 +2412,20 @@ body.modal-open {
 
   .modules-grid { grid-template-columns: minmax(0, 1fr); }
   .community-metrics-grid { grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
+  .team-filters {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 0.6rem;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .team-filters::-webkit-scrollbar {
+    display: none;
+  }
+  .team-filter-btn {
+    flex-shrink: 0;
+  }
   .community-profiles-grid { grid-template-columns: minmax(0, 1fr); }
 
   .showcase-cap { white-space: normal; text-align: center; width: max-content; max-width: calc(100% - 2.4rem); }

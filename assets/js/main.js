@@ -45,6 +45,10 @@
     var target;
     try {
       target = document.querySelector(targetId);
+      if (!target) {
+        if (targetId === '#equipo') target = document.getElementById('equipo') || document.getElementById('comunidad');
+        if (targetId === '#comunidad') target = document.getElementById('comunidad') || document.getElementById('equipo');
+      }
     } catch (e) {
       target = null;
     }
@@ -128,105 +132,251 @@
   var USERS_API_ENDPOINT = BACKEND_URL + '/api/users';
   var SALAS_API_ENDPOINT = BACKEND_URL + '/api/salas';
 
-  /* ---------- 4. Pioneros de la Comunidad Kyubi ---------- */
-  var PIONEER_MEMBERS = [
+  /* ---------- 4. Directorio Oficial: Equipo de Kyubi (Core Team & Staff) ---------- */
+  var KYUBI_TEAM_MEMBERS = [
+    // --- FOUNDERS (2) ---
     {
-      id: 'usr-nothing',
-      username: 'Nothing',
-      displayName: '𝗧𝗥𝗨𝗦𝗧 𝗡𝗢𝗧𝗛𝗜𝗡𝗚',
-      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/35bec74e-b3f1-47e3-8b86-d9f8121714af.webp',
-      badge: 'Miembro Fundador',
-      badgeClass: 'badge-founder',
-      level: 'Nv. 1',
-      tagline: 'Pionero Fundador · Roleplay & Tertulia',
-      status: 'Tester Activo'
-    },
-    {
-      id: 'usr-sylve',
-      username: 'Sylve',
-      displayName: '☾ 𝐒𝐲𝐥𝐯𝐞 ✧',
-      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/0ad67f23-9710-4241-9b34-1f50cfa53490.webp',
-      badge: 'Directora de Rol',
-      badgeClass: 'badge-roleplay',
-      level: 'Nv. 1',
-      tagline: 'Directora de Fichas Vivas & Historias',
-      status: 'Tester Activo'
-    },
-    {
-      id: 'usr-lolbit',
-      username: 'Lolbit',
+      id: 'team-lolbit',
+      username: 'lolbit',
       displayName: 'Lolbit',
       avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/9de91396-166c-4d9e-8d9c-2c5c2148e9ad.webp',
-      badge: 'Desarrollador',
-      badgeClass: 'badge-dev',
-      level: 'Nv. 1',
-      tagline: 'Desarrollador Principal · Kyubi Core',
-      status: 'Pionero'
+      role: 'Founder',
+      category: 'founders',
+      badge: 'Founder',
+      badgeClass: 'badge-founder',
+      haloClass: 'halo-founder',
+      monogramClass: 'monogram-founder',
+      level: 'Founder',
+      tagline: 'Fundador · Arquitectura, Backend & Desarrollo Core',
+      status: 'Staff Activo'
     },
     {
-      id: 'usr-lee',
-      username: 'Lee',
-      displayName: 'Lee',
-      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/7bf951ed-8b06-4e3e-8f85-7f9bb35b278a.webp',
-      badge: 'Pionera',
-      badgeClass: 'badge-pioneer',
-      level: 'Nv. 1',
-      tagline: 'Moderación & Tertulias Nocturnas',
-      status: 'Tester Activo'
-    },
-    {
-      id: 'usr-mike',
-      username: 'K.Mike',
-      displayName: 'Mike',
-      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/7313af33-e574-41c5-9800-eb9d7d0e1e91.webp',
-      badge: 'Watch Party',
-      badgeClass: 'badge-cine',
-      level: 'Nv. 1',
-      tagline: 'Anfitrión de Watch Parties y Cine',
-      status: 'Tester Activo'
-    },
-    {
-      id: 'usr-polaris',
-      username: 'pola',
+      id: 'team-polaris',
+      username: 'polaris',
       displayName: 'Polaris',
       avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/b96912a5-072e-42c3-93cd-fbdfef4676bf.webp',
-      badge: 'Tertulia de Voz',
-      badgeClass: 'badge-voz',
-      level: 'Nv. 1',
-      tagline: 'Tertulias de Voz & Espacios Lofi',
-      status: 'Pionero'
+      role: 'Founder',
+      category: 'founders',
+      badge: 'Founder',
+      badgeClass: 'badge-founder',
+      haloClass: 'halo-founder',
+      monogramClass: 'monogram-founder',
+      level: 'Founder',
+      tagline: 'Fundador · Dirección de Producto & Estrategia Comunitaria',
+      status: 'Staff Activo'
+    },
+
+    // --- MODERACIÓN / STAFF (8) ---
+    {
+      id: 'team-mangle',
+      username: 'mangle',
+      displayName: 'Mangle',
+      avatarUrl: null,
+      role: 'Moderador',
+      category: 'mod',
+      badge: 'Moderador',
+      badgeClass: 'badge-mod',
+      haloClass: 'halo-mod',
+      monogramClass: 'monogram-mod',
+      level: 'Staff',
+      tagline: 'Moderador · Seguridad de Salas & Dinámicas Activas',
+      status: 'Staff Activo'
     },
     {
-      id: 'usr-toast',
+      id: 'team-nana',
+      username: 'nana',
+      displayName: 'Nana',
+      avatarUrl: null,
+      role: 'Moderadora',
+      category: 'mod',
+      badge: 'Moderadora',
+      badgeClass: 'badge-mod',
+      haloClass: 'halo-mod',
+      monogramClass: 'monogram-mod',
+      level: 'Staff',
+      tagline: 'Moderadora · Convivencia, Normas & Soporte a Usuarios',
+      status: 'Staff Activo'
+    },
+    {
+      id: 'team-sylvee',
+      username: 'sylve',
+      displayName: 'Sylvee',
+      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/0ad67f23-9710-4241-9b34-1f50cfa53490.webp',
+      role: 'Moderador',
+      category: 'mod',
+      badge: 'Moderador',
+      badgeClass: 'badge-mod',
+      haloClass: 'halo-mod',
+      monogramClass: 'monogram-mod',
+      level: 'Staff',
+      tagline: 'Moderador · Supervisión de Fichas Vivas & Salas de Rol',
+      status: 'Staff Activo'
+    },
+    {
+      id: 'team-nothing',
+      username: 'nothing',
+      displayName: 'Nothing',
+      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/35bec74e-b3f1-47e3-8b86-d9f8121714af.webp',
+      role: 'Moderador',
+      category: 'mod',
+      badge: 'Moderador',
+      badgeClass: 'badge-mod',
+      haloClass: 'halo-mod',
+      monogramClass: 'monogram-mod',
+      level: 'Staff',
+      tagline: 'Moderador · Reglas Globales & Moderación de Canales',
+      status: 'Staff Activo'
+    },
+    {
+      id: 'team-andy',
+      username: 'andy',
+      displayName: 'Andy',
+      avatarUrl: null,
+      role: 'Moderador',
+      category: 'mod',
+      badge: 'Moderador',
+      badgeClass: 'badge-mod',
+      haloClass: 'halo-mod',
+      monogramClass: 'monogram-mod',
+      level: 'Staff',
+      tagline: 'Moderador · Asistencia Técnica & Atención a Miembros',
+      status: 'Staff Activo'
+    },
+    {
+      id: 'team-ivan',
+      username: 'ivan',
+      displayName: 'Ivan',
+      avatarUrl: null,
+      role: 'Moderador',
+      category: 'mod',
+      badge: 'Moderador',
+      badgeClass: 'badge-mod',
+      haloClass: 'halo-mod',
+      monogramClass: 'monogram-mod',
+      level: 'Staff',
+      tagline: 'Moderador · Orden de Comunidad & Actividad en Salas',
+      status: 'Staff Activo'
+    },
+    {
+      id: 'team-xiaoi',
+      username: 'xiaoi',
+      displayName: 'Xiaoi',
+      avatarUrl: null,
+      role: 'Moderador',
+      category: 'mod',
+      badge: 'Moderador',
+      badgeClass: 'badge-mod',
+      haloClass: 'halo-mod',
+      monogramClass: 'monogram-mod',
+      level: 'Staff',
+      tagline: 'Moderador · Integración Comunitaria & Bienvenida',
+      status: 'Staff Activo'
+    },
+    {
+      id: 'team-toast',
       username: 'toastwater',
-      displayName: '𝐓𝐨𝐚𝐬𝐭',
+      displayName: 'Toast',
       avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/cda07b56-e6ab-4b8c-9193-33b7de52b718.webp',
-      badge: 'Comunidad',
-      badgeClass: 'badge-standard',
-      level: 'Nv. 1',
-      tagline: 'Explorador Social · País de Estupefacientes',
-      status: 'Tester Activo'
+      role: 'Moderador',
+      category: 'mod',
+      badge: 'Moderador',
+      badgeClass: 'badge-mod',
+      haloClass: 'halo-mod',
+      monogramClass: 'monogram-mod',
+      level: 'Staff',
+      tagline: 'Moderador · Dinámicas de Comunidad & Actividades Especiales',
+      status: 'Staff Activo'
+    },
+
+    // --- DISEÑO & ARTE (4) ---
+    {
+      id: 'team-lee',
+      username: 'lee',
+      displayName: 'Lee',
+      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/7bf951ed-8b06-4e3e-8f85-7f9bb35b278a.webp',
+      role: 'Diseño',
+      category: 'design',
+      badge: 'Diseño',
+      badgeClass: 'badge-design',
+      haloClass: 'halo-design',
+      monogramClass: 'monogram-design',
+      level: 'Arte',
+      tagline: 'Diseño · Concept Art, Paletas & Experiencia de Usuario',
+      status: 'Staff Activo'
     },
     {
-      id: 'usr-darth',
-      username: 'darth_10',
-      displayName: 'N1NF0MANA',
-      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/97801b81-3ce2-4643-873e-52a2cab69dfd.webp',
-      badge: 'Roleplay',
-      badgeClass: 'badge-roleplay',
-      level: 'Nv. 1',
-      tagline: 'Castillo de Darth · Historias Colaborativas',
-      status: 'Tester Activo'
+      id: 'team-sam',
+      username: 'sam',
+      displayName: 'Sam',
+      avatarUrl: null,
+      role: 'Diseño',
+      category: 'design',
+      badge: 'Diseño',
+      badgeClass: 'badge-design',
+      haloClass: 'halo-design',
+      monogramClass: 'monogram-design',
+      level: 'Arte',
+      tagline: 'Diseño · Ilustración Anime & Marcos Orbitales',
+      status: 'Staff Activo'
+    },
+    {
+      id: 'team-bonxyz',
+      username: 'bonxyz',
+      displayName: 'bonxyz',
+      avatarUrl: null,
+      role: 'Diseño',
+      category: 'design',
+      badge: 'Diseño',
+      badgeClass: 'badge-design',
+      haloClass: 'halo-design',
+      monogramClass: 'monogram-design',
+      level: 'Arte',
+      tagline: 'Diseño · Identidad Visual, Banners & Gráficos Oficiales',
+      status: 'Staff Activo'
+    },
+    {
+      id: 'team-ligroach',
+      username: 'ligroach',
+      displayName: 'Li Groach',
+      avatarUrl: null,
+      role: 'Diseño',
+      category: 'design',
+      badge: 'Diseño',
+      badgeClass: 'badge-design',
+      haloClass: 'halo-design',
+      monogramClass: 'monogram-design',
+      level: 'Arte',
+      tagline: 'Diseño · Arte Digital, Assets & Estética Cósmica',
+      status: 'Staff Activo'
+    },
+
+    // --- VOLUNTARIADO / CONTRIBUIDORES (1) ---
+    {
+      id: 'team-mike',
+      username: 'k.mike',
+      displayName: 'Mike',
+      avatarUrl: 'https://eakbqejycdcrvcgsctwz.supabase.co/storage/v1/object/public/uploads/avatars/7313af33-e574-41c5-9800-eb9d7d0e1e91.webp',
+      role: 'Voluntario',
+      category: 'volunteer',
+      badge: 'Voluntario',
+      badgeClass: 'badge-volunteer',
+      haloClass: 'halo-volunteer',
+      monogramClass: 'monogram-volunteer',
+      level: 'Apoyo',
+      tagline: 'Voluntario · Contribuidor Comunitario & Watch Parties de Cine',
+      status: 'Colaborador'
     }
   ];
 
   var communityGrid = document.getElementById('community-grid');
   var statTotalUsers = document.getElementById('stat-total-users');
+  var currentTeamFilter = 'all';
 
   function getInitials(str) {
     if (!str) return 'KB';
     try {
-      var words = str.trim().split(/\s+/).filter(Boolean);
+      var clean = str.replace(/[^\w\s\u00C0-\u017F]/gi, '').trim();
+      var words = (clean || str).trim().split(/\s+/).filter(Boolean);
       if (words.length >= 2) {
         var first = Array.from(words[0])[0] || '';
         var second = Array.from(words[1])[0] || '';
@@ -241,29 +391,35 @@
     return 'KB';
   }
 
-  function renderCommunityGrid(members) {
+  function renderTeamGrid(filterCategory) {
     if (!communityGrid) return;
-    var list = (members && members.length > 0) ? members : PIONEER_MEMBERS;
+    currentTeamFilter = filterCategory || 'all';
 
-    var cardsHtml = list.map(function (user) {
-      var displayName = user.displayName || user.username || 'Pionero Anónimo';
-      var username = user.username || 'explorador';
+    var filteredList = currentTeamFilter === 'all'
+      ? KYUBI_TEAM_MEMBERS
+      : KYUBI_TEAM_MEMBERS.filter(function (m) { return m.category === currentTeamFilter; });
+
+    var cardsHtml = filteredList.map(function (user) {
+      var displayName = user.displayName || user.username || 'Miembro del Equipo';
+      var username = user.username || 'staff';
       var initials = getInitials(displayName);
-      var badge = user.badge || (user.role === 'ADMIN' ? 'Admin' : 'Pionero');
-      var badgeClass = user.badgeClass || 'badge-pioneer';
-      var level = user.level ? (typeof user.level === 'number' ? 'Nv. ' + user.level : user.level) : 'Nv. 1';
-      var tagline = user.tagline || (user.bio ? user.bio : 'Pionero de la fase cerrada de Kyubi');
-      var status = user.status || 'Tester Activo';
+      var badge = user.badge || user.role || 'Staff';
+      var badgeClass = user.badgeClass || 'badge-mod';
+      var haloClass = user.haloClass || 'halo-mod';
+      var monogramClass = user.monogramClass || 'monogram-mod';
+      var level = user.level || 'Staff';
+      var tagline = user.tagline || 'Miembro del equipo oficial de Kyubi';
+      var status = user.status || 'Staff Activo';
 
       var avatarHtml = user.avatarUrl
-        ? '<img src="' + user.avatarUrl + '" alt="' + displayName + '" width="54" height="54" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\';"><span class="avatar-monogram" style="display:none;">' + initials + '</span>'
-        : '<span class="avatar-monogram">' + initials + '</span>';
+        ? '<img src="' + user.avatarUrl + '" alt="' + displayName + '" width="58" height="58" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\';"><span class="avatar-monogram ' + monogramClass + '" style="display:none;">' + initials + '</span>'
+        : '<span class="avatar-monogram ' + monogramClass + '">' + initials + '</span>';
 
       return (
         '<article class="community-card glass-card reveal-on-scroll">' +
           '<div class="community-card-top">' +
             '<div class="avatar-halo-wrap">' +
-              '<div class="avatar-halo"></div>' +
+              '<div class="avatar-halo ' + haloClass + '"></div>' +
               '<div class="community-avatar-crystal">' +
                 avatarHtml +
               '</div>' +
@@ -283,31 +439,51 @@
               '<span class="pulse-dot-mini" aria-hidden="true"></span>' +
               status +
             '</span>' +
-            '<span class="community-badge-chip">Pionero 2026</span>' +
+            '<span class="community-badge-chip">Kyubi Staff</span>' +
           '</div>' +
         '</article>'
       );
     }).join('');
 
-    var ctaCardHtml =
-      '<article class="community-card community-cta-card glass-card reveal-on-scroll">' +
-        '<div class="community-cta-icon" aria-hidden="true">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>' +
-        '</div>' +
-        '<div class="community-card-info">' +
-          '<h3 class="community-display-name">Únete a los Pioneros</h3>' +
-          '<p class="community-tagline">Sé de los primeros en reclamar tu identidad cósmica y tu nombre de usuario exclusivo antes del lanzamiento oficial.</p>' +
-        '</div>' +
-        '<div class="community-card-bottom">' +
-          '<a class="btn btn-download btn-sm community-cta-btn" href="#descarga">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>' +
-            'Reservar mi Cuenta' +
-          '</a>' +
-        '</div>' +
-      '</article>';
+    var ctaCardHtml = '';
+    if (currentTeamFilter === 'all' || currentTeamFilter === 'volunteer') {
+      ctaCardHtml =
+        '<article class="community-card community-cta-card glass-card reveal-on-scroll">' +
+          '<div class="community-cta-icon" aria-hidden="true">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>' +
+          '</div>' +
+          '<div class="community-card-info">' +
+            '<h3 class="community-display-name">¿Quieres colaborar?</h3>' +
+            '<p class="community-tagline">Buscamos moderadores, artistas, creadores de rol y colaboradores apasionados por la comunidad.</p>' +
+          '</div>' +
+          '<div class="community-card-bottom">' +
+            '<a class="btn btn-primary btn-sm community-cta-btn" href="https://discord.gg/JNT7Payj3F" target="_blank" rel="noopener noreferrer">' +
+              'Unirse al Discord' +
+            '</a>' +
+          '</div>' +
+        '</article>';
+    }
 
     communityGrid.innerHTML = cardsHtml + ctaCardHtml;
     observeRevealElements(communityGrid);
+  }
+
+  function initTeamFilters() {
+    var filterButtons = document.querySelectorAll('.team-filter-btn');
+    if (!filterButtons.length) return;
+
+    filterButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var filter = btn.getAttribute('data-filter') || 'all';
+        filterButtons.forEach(function (b) {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-selected', 'true');
+        renderTeamGrid(filter);
+      });
+    });
   }
 
   /* ---------- 5. Guía de instalación colapsable ---------- */
@@ -487,139 +663,52 @@
     }
   });
 
-  /* ---------- 9. Pioneros en Footer & Sincronización de Comunidad ---------- */
+  /* ---------- 9. Equipo de Kyubi en Footer & Inicialización ---------- */
   var pioneersAvatarStack = document.getElementById('pioneers-avatar-stack');
   var footerPioneersCount = document.getElementById('footer-pioneers-count');
 
-  function renderFooterPioneers(members, totalCount) {
-    var list = (members && members.length > 0) ? members : PIONEER_MEMBERS;
-    var displayTotal = totalCount || list.length || 24;
-
+  function renderFooterTeam() {
     if (footerPioneersCount) {
-      footerPioneersCount.textContent = '+' + displayTotal + ' Pioneros';
+      footerPioneersCount.textContent = '15 Miembros del Equipo';
     }
 
     if (!pioneersAvatarStack) return;
 
-    var stackSlice = list.slice(0, 6);
+    var stackSlice = KYUBI_TEAM_MEMBERS.slice(0, 6);
     var html = stackSlice.map(function (user, idx) {
-      var displayName = user.displayName || user.username || 'Pionero';
+      var displayName = user.displayName || user.username || 'Equipo';
       var initials = getInitials(displayName);
+      var monogramClass = user.monogramClass || 'monogram-mod';
       var zIndex = 10 - idx;
       var avatarContent = user.avatarUrl
-        ? '<img class="stack-avatar-img" src="' + user.avatarUrl + '" alt="' + displayName + '" width="36" height="36" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\';"><span class="stack-avatar-fallback" style="display:none;">' + initials + '</span>'
-        : '<span class="stack-avatar-fallback">' + initials + '</span>';
+        ? '<img class="stack-avatar-img" src="' + user.avatarUrl + '" alt="' + displayName + '" width="36" height="36" loading="lazy" onerror="this.style.display=\'none\';if(this.nextElementSibling)this.nextElementSibling.style.display=\'flex\';"><span class="stack-avatar-fallback ' + monogramClass + '" style="display:none;">' + initials + '</span>'
+        : '<span class="stack-avatar-fallback ' + monogramClass + '">' + initials + '</span>';
 
       return (
-        '<div class="stack-avatar-item" style="z-index:' + zIndex + ';" title="' + displayName + ' (@' + (user.username || 'pionero') + ')">' +
+        '<div class="stack-avatar-item" style="z-index:' + zIndex + ';" title="' + displayName + ' (' + user.role + ')">' +
           avatarContent +
         '</div>'
       );
     }).join('');
 
-    if (displayTotal > stackSlice.length) {
-      var remaining = displayTotal - stackSlice.length;
+    var remaining = KYUBI_TEAM_MEMBERS.length - stackSlice.length;
+    if (remaining > 0) {
       html += '<div class="stack-avatar-item stack-avatar-more" style="z-index:3;"><span>+' + remaining + '</span></div>';
     }
 
     pioneersAvatarStack.innerHTML = html;
   }
 
-  function fetchCommunityMembers() {
-    var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-    var timeoutId = controller ? setTimeout(function () { controller.abort(); }, 12000) : null;
-
-    function applyUsers(users, total) {
-      var count = total || (users ? users.length : 24);
-      if (statTotalUsers) {
-        statTotalUsers.textContent = '+' + count;
-      }
-      renderCommunityGrid(users);
-      renderFooterPioneers(users, count);
+  function initTeamDirectory() {
+    if (statTotalUsers) {
+      statTotalUsers.textContent = '15';
     }
-
-    function handleFallback() {
-      fetch(SALAS_API_ENDPOINT, { signal: controller ? controller.signal : undefined })
-        .then(function (res) {
-          if (!res.ok) throw new Error('Salas fallback unavailable');
-          return res.json();
-        })
-        .then(function (salasJson) {
-          var salas = Array.isArray(salasJson) ? salasJson : ((salasJson && (salasJson.data || salasJson.salas)) || []);
-          if (salas.length > 0) {
-            var seen = {};
-            var salaUsers = [];
-            salas.forEach(function (s) {
-              var h = s.host;
-              if (h && (h.id || h.username)) {
-                var uid = h.id || h.username;
-                if (!seen[uid]) {
-                  seen[uid] = true;
-                  salaUsers.push({
-                    id: uid,
-                    username: h.username || 'explorador',
-                    displayName: h.displayName || h.username || 'Pionero',
-                    avatarUrl: h.avatarUrl || null,
-                    badge: 'Anfitrión Activo',
-                    badgeClass: 'badge-roleplay',
-                    level: 'Nv. 1',
-                    tagline: s.name ? ('Sala: ' + s.name) : 'Anfitrión de Kyubi',
-                    status: 'En Vivo'
-                  });
-                }
-              }
-            });
-            if (salaUsers.length > 0) {
-              var combined = salaUsers.concat(PIONEER_MEMBERS.filter(function (p) {
-                return !seen[p.username.toLowerCase()];
-              }));
-              applyUsers(combined, combined.length);
-              return;
-            }
-          }
-          applyUsers(PIONEER_MEMBERS, 24);
-        })
-        .catch(function () {
-          applyUsers(PIONEER_MEMBERS, 24);
-        });
-    }
-
-    fetch(USERS_API_ENDPOINT, { signal: controller ? controller.signal : undefined })
-      .then(function (res) {
-        if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
-        return res.json();
-      })
-      .then(function (json) {
-        if (timeoutId) clearTimeout(timeoutId);
-        var users = Array.isArray(json) ? json : ((json && (json.data || json.users)) || []);
-        var total = (json && typeof json.total === 'number') ? json.total : (users.length || 24);
-        if (users.length === 0) {
-          applyUsers(PIONEER_MEMBERS, total || 24);
-        } else {
-          var normalized = users.map(function (u) {
-            return {
-              id: u.id,
-              username: u.username || 'explorador',
-              displayName: u.displayName || u.username || 'Pionero',
-              avatarUrl: u.avatarUrl || null,
-              badge: u.role === 'ADMIN' ? 'Admin' : (u.badge || 'Pionero'),
-              badgeClass: u.role === 'ADMIN' ? 'badge-founder' : (u.badgeClass || 'badge-pioneer'),
-              level: u.level ? (typeof u.level === 'number' ? 'Nv. ' + u.level : u.level) : 'Nv. 1',
-              tagline: u.bio || u.tagline || 'Pionero de la red de Kyubi',
-              status: u.status || 'Tester Activo'
-            };
-          });
-          applyUsers(normalized, total);
-        }
-      })
-      .catch(function (err) {
-        if (timeoutId) clearTimeout(timeoutId);
-        console.warn('[Kyubi Community] Error al conectar con /api/users:', err.message || err);
-        handleFallback();
-      });
+    renderTeamGrid('all');
+    initTeamFilters();
+    renderFooterTeam();
   }
 
-  fetchCommunityMembers();
+  initTeamDirectory();
 
   /* ---------- 10. Año dinámico del footer ---------- */
   var yearEl = document.getElementById('year');
